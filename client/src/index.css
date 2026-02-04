@@ -1,0 +1,103 @@
+/* 1. ШРИФТЪТ Е НАЙ-ГОРЕ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* 2. TAILWIND ДИРЕКТИВИ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. ОСНОВНИ НАСТРОЙКИ (VARIABLES) */
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 1rem;
+
+    /* Мускули */
+    --muscle-stroke: 215 16% 47%;
+    --muscle-hover: 221 83% 53%;
+    --muscle-fill-hover: 221 83% 93%;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 212 27% 84%;
+  }
+}
+
+/* 4. ТУК ОПРАВИХ @APPLY ДА СА ВЪТРЕ В СКОБИТЕ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* 5. КЛАСОВЕ ЗА КАРТАТА */
+.muscle-path {
+  /* Това оправя грешката от преди малко - @apply вече е вътре в класа */
+  @apply transition-all duration-300 ease-out cursor-pointer;
+  
+  fill: transparent;
+  stroke: #94a3b8;
+  stroke-width: 1.5;
+}
+
+.muscle-path:hover {
+  fill: #eff6ff;
+  stroke: #2563eb;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px rgba(37, 99, 235, 0.4));
+}
+
+.muscle-path.active {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+}
+
+/* 6. СКРИВАНЕ НА СКРОЛБАР */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
