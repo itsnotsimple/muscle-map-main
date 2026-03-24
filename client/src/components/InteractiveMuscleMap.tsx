@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import $ from 'jquery'; 
 import 'imagemapster';
 
@@ -25,6 +26,7 @@ interface InteractiveMuscleMapProps {
 const InteractiveMuscleMap = ({ onMuscleSelect }: InteractiveMuscleMapProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isLoaded && imgRef.current) {
@@ -102,8 +104,8 @@ const InteractiveMuscleMap = ({ onMuscleSelect }: InteractiveMuscleMapProps) => 
         
         {/* Loader */}
         {!isLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-50 z-10">
-                <span className="text-slate-400 font-bold">Loading Map...</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-50 dark:bg-slate-900 z-10 transition-colors rounded-2xl">
+                <span className="text-slate-400 font-bold">{t('map.loading')}</span>
             </div>
         )}
         
@@ -111,7 +113,7 @@ const InteractiveMuscleMap = ({ onMuscleSelect }: InteractiveMuscleMapProps) => 
           ref={imgRef}
           src="/images/musclemap3.png" 
           useMap="#musclemap" 
-          className="block w-full h-auto"
+          className="block w-full h-auto dark:invert dark:opacity-90"
           style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.5s' }}
           alt="Muscle Map"
           onLoad={() => setIsLoaded(true)}

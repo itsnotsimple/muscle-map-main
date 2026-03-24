@@ -1,17 +1,53 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import { useGoogleLogin } from "@react-oauth/google";
+
+const GoogleIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-5 h-5">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+);
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+        try {
+            setError("");
+            setIsSubmitting(true);
+            const response = await fetch("http://localhost:5000/api/google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ access_token: tokenResponse.access_token }),
+            });
+            
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || `Server Error`);
+            
+            login(data.token, data.user);
+            navigate("/");
+        } catch (err: any) {
+            setError(err.message || "Google Authentication failed");
+        } finally {
+            setIsSubmitting(false);
+        }
+    },
+    onError: () => setError("Google Login was canceled or failed."),
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,38 +55,28 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      console.log("📡 Sending login request to Port 5000...");
-      
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      // 1. Взимаме отговора като ТЕКСТ (за да не гръмне, ако е празен)
       const text = await response.text();
-      console.log("📩 Raw Server Response:", text); // Това ще ни покаже истината в конзолата (F12)
-
-      // 2. Опитваме се да го направим на JSON
       let data;
       try {
         data = text ? JSON.parse(text) : {};
       } catch (err) {
-        throw new Error("Сървърът върна невалиден отговор (не е JSON). Виж конзолата.");
+        throw new Error("Сървърът върна невалиден отговор.");
       }
 
-      // 3. Проверка за грешки от сървъра
       if (!response.ok) {
-        throw new Error(data.message || `Server Error: ${response.status}`);
+        throw new Error(data.message || `Server Error`);
       }
 
-      // 4. Успех!
-      console.log("✅ Login Successful:", data);
       login(data.token, data.user);
       navigate("/");
       
     } catch (err: any) {
-      console.error("❌ Login Error:", err);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
@@ -58,64 +84,108 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
-      <Header />
-      <main className="flex-grow flex items-center justify-center px-4 py-12">
-        <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-slate-100">
-          <h2 className="text-3xl font-extrabold text-slate-800 text-center mb-2">Welcome Back</h2>
-          
-          {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 text-sm border border-red-100">
-              <p className="font-bold">Грешка при вход:</p>
-              <p>{error}</p>
-            </div>
-          )}
+    <div className="min-h-screen bg-[#E5ECEF] dark:bg-slate-950 flex flex-col items-center justify-center py-10 px-4 font-sans transition-colors">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-[440px] p-10 transition-colors border-t-8 border-transparent dark:border-t-slate-800">
+        
+        {/* Header Section */}
+        <div className="flex flex-col items-center mb-8 text-center">
+            <Link to="/" className="inline-block mb-4 transition-transform hover:scale-105 active:scale-95 group" title="Return Home">
+                <img src="/images/logo.png" alt="Muscle Map" className="h-[52px] w-auto drop-shadow-sm group-hover:drop-shadow-md transition-all object-contain" />
+            </Link>
+            <h1 className="text-[22px] font-black text-[#1b3061] dark:text-white tracking-tight uppercase mb-1 leading-snug">Muscle Map</h1>
+            <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 mt-2 mb-2">{t('auth.welcomeBack', 'Welcome Back')}</h2>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+        {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-md mb-6 text-sm text-center border border-red-100 dark:border-red-900/30 transition-colors">
+              {error}
+            </div>
+        )}
+
+        {/* OAuth Buttons */}
+        <div className="flex flex-col gap-3 mb-8">
+            <button 
+                type="button" 
+                onClick={() => handleGoogleLogin()}
+                className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 border border-slate-300 dark:border-slate-700 font-semibold py-2.5 rounded-md transition-all text-sm shadow-sm"
+            >
+                <GoogleIcon />
+                Google
+            </button>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center mb-6 opacity-70">
+            <div className="flex-1 border-t border-slate-200 dark:border-slate-700"></div>
+            <span className="mx-4 text-[11px] font-medium tracking-wide text-slate-400 dark:text-slate-500 uppercase">Or sign in with email</span>
+            <div className="flex-1 border-t border-slate-200 dark:border-slate-700"></div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Email</label>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Email Address <span className="text-red-500">*</span>
+              </label>
               <input
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 outline-none"
-                placeholder="you@example.com"
+                className="w-full px-1 py-1.5 bg-transparent border-b-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:border-blue-600 dark:focus:border-blue-500 transition-colors outline-none text-sm placeholder-slate-400"
+                placeholder="email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Password <span className="text-red-500">*</span>
+              </label>
               <input
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-blue-500 focus:ring-2 outline-none"
+                className="w-full px-1 py-1.5 bg-transparent border-b-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:border-blue-600 dark:focus:border-blue-500 transition-colors outline-none text-sm placeholder-slate-400"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
+            <div className="flex items-center justify-between mt-6">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                    <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" 
+                        checked={rememberMe}
+                        onChange={() => setRememberMe(!rememberMe)}
+                    />
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
+                        Remember me
+                    </span>
+                </label>
+                <Link to="/forgot-password" className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                    Forgot your password?
+                </Link>
+            </div>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-3 rounded-xl font-bold text-white shadow-md transition-all ${
-                 isSubmitting ? "bg-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+              className={`w-full py-2.5 rounded-md font-bold text-white transition-all text-sm mt-8 ${
+                 isSubmitting ? "bg-slate-400 dark:bg-slate-600 cursor-not-allowed" : "bg-[#274690] hover:bg-[#1f3770] shadow-md"
               }`}
             >
-              {isSubmitting ? "Signing in..." : "Sign In"}
+              {isSubmitting ? t('auth.signingIn', 'Signing in...') : 'Sign in'}
             </button>
-          </form>
 
-          <p className="mt-8 text-center text-slate-600">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-bold hover:underline">
-              Join Now
-            </Link>
-          </p>
-        </div>
-      </main>
-      <Footer />
+            <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                    Don't have an account? <Link to="/register" className="text-[#274690] dark:text-[#567ecd] hover:underline font-bold transition-all ml-1">Create one Here</Link>
+                </p>
+            </div>
+        </form>
+
+      </div>
     </div>
   );
 };

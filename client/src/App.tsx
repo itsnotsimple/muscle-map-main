@@ -10,6 +10,9 @@ import MuscleDetail from "./pages/MuscleDetail";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile"; 
 import BmiPage from "./pages/BmiPage";
+import DietPlan from './pages/DietPlan';
+import VerifyEmail from './pages/VerifyEmail';
+import Terms from './pages/Terms';
 
 const queryClient = new QueryClient();
 
@@ -24,11 +27,14 @@ const App = () => {
           {/* Вход и Регистрация */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify/:token" element={<VerifyEmail />} />
+          <Route path="/terms" element={<Terms />} />
           
           {/* Защитени страници */}
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/bmi" element={<BmiPage />} />
+          <Route path="/diet" element={<DietPlan />} />
           
           {/* Детайли за мускул */}
           <Route path="/muscle/:muscleId" element={<MuscleDetail />} />
