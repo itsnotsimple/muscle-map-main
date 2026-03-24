@@ -4,7 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); 
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey123";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    console.warn("⚠️  WARNING: JWT_SECRET is not defined in the environment variables!");
+}
 
 // --- MIDDLEWARE ---
 const authenticateToken = (req, res, next) => {
