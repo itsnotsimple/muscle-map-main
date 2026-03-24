@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useGoogleLogin } from "@react-oauth/google";
+import AnimatedContent from "../components/reactbits/AnimatedContent";
 
 const GoogleIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-5 h-5">
@@ -84,10 +85,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#E5ECEF] dark:bg-slate-950 flex flex-col items-center justify-center py-10 px-4 font-sans transition-colors">
-      <div className="bg-white dark:bg-slate-900 rounded-lg shadow-xl w-full max-w-[440px] p-10 transition-colors border-t-8 border-transparent dark:border-t-slate-800">
-        
-        {/* Header Section */}
+    <div className="min-h-screen bg-transparent relative flex flex-col items-center justify-center py-10 px-4 font-sans transition-colors">
+      <AnimatedContent
+        distance={40}
+        direction="vertical"
+        duration={1}
+        ease="back.out(1.5)"
+        scale={0.9}
+        threshold={0}
+      >
+        <div className="backdrop-blur-3xl bg-white/70 dark:bg-slate-900/70 rounded-[2rem] shadow-2xl dark:shadow-blue-900/10 w-full max-w-[440px] p-10 transition-colors border border-white/20 dark:border-slate-700/50">
+          
+          {/* Header Section */}
         <div className="flex flex-col items-center mb-8 text-center">
             <Link to="/" className="inline-block mb-4 transition-transform hover:scale-105 active:scale-95 group" title="Return Home">
                 <img src="/images/logo.png" alt="Muscle Map" className="h-[52px] w-auto drop-shadow-sm group-hover:drop-shadow-md transition-all object-contain" />
@@ -186,7 +195,8 @@ const Login = () => {
         </form>
 
       </div>
-    </div>
+    </AnimatedContent>
+  </div>
   );
 };
 

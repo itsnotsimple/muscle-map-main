@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Импортираме всички страници
 import Index from "./pages/Index";
+import Exercises from "./pages/Exercises";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Bookmarks from "./pages/Bookmarks";
@@ -15,6 +16,9 @@ import VerifyEmail from './pages/VerifyEmail';
 import Terms from './pages/Terms';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import { GamificationEngine } from './components/GamificationEngine';
+import SoftAurora from './components/reactbits/SoftAurora';
+import GradualBlur from './components/reactbits/GradualBlur';
 
 const queryClient = new QueryClient();
 
@@ -23,8 +27,9 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          {/* Главна страница */}
+          {/* Главна страница и Упражнения */}
           <Route path="/" element={<Index />} />
+          <Route path="/exercises" element={<Exercises />} />
           
           {/* Вход и Регистрация */}
           <Route path="/login" element={<Login />} />
@@ -46,6 +51,16 @@ const App = () => {
           {/* Страница за грешка (404) */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <GamificationEngine />
+        <SoftAurora
+          speed={0.5}
+          scale={1.5}
+          brightness={1}
+          color1="#f7f7f7"
+          color2="#001eff"
+          noiseFrequency={2.5}
+          noiseOctaves={4}
+        />
       </BrowserRouter>
     </QueryClientProvider>
   );

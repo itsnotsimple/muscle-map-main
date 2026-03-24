@@ -40,7 +40,7 @@ const VerifyEmail = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#E5ECEF] dark:bg-slate-950 font-sans transition-colors">
+    <div className="flex flex-col min-h-screen bg-transparent relative font-sans transition-colors">
       <Header />
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="bg-white dark:bg-slate-900 rounded-xl p-10 max-w-sm w-full text-center shadow-lg border-t-4 border-blue-600">

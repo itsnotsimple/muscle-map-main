@@ -1,185 +1,96 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Home, Bookmark, List, Info, User, LogOut, Menu, X } from "lucide-react"; // Иконите
+import { User, LogOut, Calculator, Apple, Bookmark, Map, Activity, User as UserIcon, LogIn, UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import CardNav from "./reactbits/CardNav";
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const location = useLocation();
   const { t } = useTranslation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Create the dynamic array for the GSAP cards
+  const items = [
+    {
+      label: t('nav.tools', "Tools & Trackers"),
+      bgColor: "var(--card-nav-bg-1, #0f172a)",
+      textColor: "#f8fafc",
+      links: [
+        { label: t('header.bmi', "BMI Calculator"), href: "/bmi", icon: Calculator },
+        { label: t('diet.title', "Diet Plan"), href: "/diet", icon: Apple },
+        { label: t('header.bookmark', "Bookmarks"), href: "/bookmarks", icon: Bookmark }
+      ]
+    },
+    {
+      label: t('nav.platform', "Platform"),
+      bgColor: "var(--card-nav-bg-2, #1e293b)",
+      textColor: "#f8fafc",
+      links: [
+        { label: t('header.home', "Interactive Map"), href: "/", icon: Map },
+        { label: t('nav.exercises', "All Exercises"), href: "/exercises", icon: Activity }
+      ]
+    },
+    user ? {
+      label: user.email?.split('@')[0] || t('nav.account', "Account"),
+      bgColor: "var(--card-nav-bg-3, #3b82f6)",
+      textColor: "#ffffff",
+      links: [
+        { label: t('header.profile', "My Profile"), href: "/profile", icon: UserIcon },
+      ]
+    } : {
+      label: t('nav.auth', "Authentication"),
+      bgColor: "var(--card-nav-bg-3, #3b82f6)",
+      textColor: "#ffffff",
+      links: [
+        { label: t('header.login', "Log In"), href: "/login", icon: LogIn },
+        { label: t('header.signup', "Sign Up"), href: "/register", icon: UserPlus }
+      ]
+    }
+  ];
 
-  // Close mobile menu whenever the route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  // Помощна функция за стилизиране на активния линк
-  const getLinkClass = (path: string) => {
-    const isActive = location.pathname === path;
-    return `flex items-center gap-2 px-3 py-2 rounded-lg transition-colors font-medium ${
-      isActive ? "text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/40" : "text-slate-600 hover:text-blue-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-slate-800/50"
-    }`;
-  };
-
-  return (
-    <header className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        
-        {/* ЛОГО И ИМЕ (В ЛЯВО) */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <img 
-            src="/images/logo.png" 
-            alt="Muscle Map Logo" 
-            className="h-10 w-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
-          />
-          <span className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            Muscle Map
-          </span>
-        </Link>
-
-        {/* MOBILE TOGGLES & HAMBURGER */}
-        <div className="flex items-center gap-3 md:hidden">
+  const RightElement = (
+    <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-1">
           <LanguageToggle />
           <ThemeToggle />
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 -mr-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* DESKTOP НАВИГАЦИЯ (В ДЯСНО) */}
-        <nav className="hidden md:flex items-center gap-2">
-          
-          <Link to="/" className={getLinkClass("/")}>
-            <Home size={18} />
-            <span>{t('header.home')}</span>
-          </Link>
-
-          <Link to="/bmi" className={getLinkClass("/bmi")}>
-             <Info size={18} />
-             <span>{t('header.bmi')}</span>
-          </Link>
-
-          <Link to="/diet" className={getLinkClass("/diet")}>
-             <List size={18} />
-             <span>{t('diet.title', 'Diet Plan')}</span>
-          </Link>
-
-          {/* BOOKMARKS - Винаги се вижда, дори да не си логнат */}
-          <Link to="/bookmarks" className={getLinkClass("/bookmarks")}>
-            <Bookmark size={18} />
-            <span>{t('header.bookmark')}</span>
-          </Link>
-
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
-
-          {user ? (
-            // АКО Е ЛОГНАТ
-            <div className="flex items-center gap-3">
-              <Link to="/profile" className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
-                <div className="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded-full text-blue-600 dark:text-blue-400">
-                    <User size={16} />
-                </div>
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-300 max-w-[100px] truncate">
-                  {user.email?.split('@')[0]}
-                </span>
-              </Link>
-              
-              <button 
-                onClick={logout}
-                title={t('header.logout')}
-                className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors p-2"
-              >
-                <LogOut size={20} />
-              </button>
-            </div>
-          ) : (
-            // АКО Е ГОСТ
-            <div className="flex items-center gap-3">
-              <Link to="/login" className="text-slate-600 dark:text-slate-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                {t('header.login')}
-              </Link>
-              <Link to="/register" className="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 shadow-md transition-all">
-                {t('header.signup')}
-              </Link>
-            </div>
-          )}
-
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
-
-          {/* TOGGLES */}
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-          </div>
-        </nav>
       </div>
-
-      {/* MOBILE MENU DROPDOWN */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 absolute w-full shadow-lg">
-          <nav className="flex flex-col gap-3">
-            <Link to="/" className={getLinkClass("/")}>
-              <Home size={18} />
-              <span>{t('header.home')}</span>
-            </Link>
-
-            <Link to="/bmi" className={getLinkClass("/bmi")}>
-               <Info size={18} />
-               <span>{t('header.bmi')}</span>
-            </Link>
-
-            <Link to="/diet" className={getLinkClass("/diet")}>
-               <List size={18} />
-               <span>{t('diet.title', 'Diet Plan')}</span>
-            </Link>
-
-            <Link to="/bookmarks" className={getLinkClass("/bookmarks")}>
-              <Bookmark size={18} />
-              <span>{t('header.bookmark')}</span>
-            </Link>
-
-            <div className="h-px w-full bg-slate-200 dark:bg-slate-800 my-2"></div>
-
-            {user ? (
-              <div className="flex flex-col gap-3">
-                <Link to="/profile" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all">
-                  <div className="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded-full text-blue-600 dark:text-blue-400">
-                      <User size={16} />
-                  </div>
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300 truncate">
-                    {user.email}
-                  </span>
-                </Link>
-                
-                <button 
-                  onClick={logout}
-                  className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors w-full text-left"
-                >
-                  <LogOut size={18} />
-                  <span>{t('header.logout', 'Sign Out')}</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                <Link to="/login" className="flex items-center justify-center border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-lg font-bold hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors w-full">
-                  {t('header.login')}
-                </Link>
-                <Link to="/register" className="flex items-center justify-center bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 dark:bg-blue-700 shadow-md transition-all w-full">
-                  {t('header.signup')}
-                </Link>
-              </div>
-            )}
-          </nav>
-        </div>
+      
+      {/* Quick Access CTA mapped directly to the navbar layer */}
+      {user ? (
+        <button 
+            onClick={logout}
+            title={t('header.logout')}
+            className="hidden md:flex items-center justify-center bg-slate-100/10 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-full h-8 w-8 transition-colors"
+        >
+            <LogOut size={14} />
+        </button>
+      ) : (
+        <Link 
+            to="/login"
+            className="hidden md:flex text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full transition-colors"
+        >
+            {t('header.login')}
+        </Link>
       )}
-    </header>
+    </div>
+  );
+
+  return (
+    <>
+      {/* We utilize CardNav which renders as a fixed position element natively */}
+      <CardNav
+        logo="/images/logo.png"
+        logoAlt="Muscle Map"
+        items={items}
+        baseColor="transparent"
+        menuColor="currentColor"
+        rightElement={RightElement}
+      />
+      {/* Explicit spacer to push content down since CardNav is position: fixed */}
+      <div className="h-20 w-full" />
+    </>
   );
 };
 

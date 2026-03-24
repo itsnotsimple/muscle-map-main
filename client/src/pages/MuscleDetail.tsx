@@ -9,7 +9,7 @@ import { ArrowLeft, Dumbbell, MapPin, Clock, Info, Bookmark, Check } from "lucid
 const MuscleDetail = () => {
   const { t } = useTranslation();
   const { muscleId } = useParams();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
 
   // Използваме 'any' за данните от базата, за да не усложняваме с дълги интерфейси сега
@@ -77,9 +77,9 @@ const MuscleDetail = () => {
       if (!response.ok) {
         throw new Error("Failed to save");
       }
-      
       const updatedList = await response.json();
       setSavedExercises(updatedList);
+      if (updateUser) updateUser({ savedExercises: updatedList });
 
     } catch (err) {
       console.error("Save error:", err);
@@ -92,7 +92,7 @@ const MuscleDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div className="min-h-screen flex flex-col bg-transparent relative transition-colors">
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin"></div>
@@ -104,7 +104,7 @@ const MuscleDetail = () => {
 
   if (!muscleData) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div className="min-h-screen flex flex-col bg-transparent relative transition-colors">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 transition-colors">{t('detail.notFound')}</h2>
@@ -116,7 +116,7 @@ const MuscleDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-slate-50 dark:bg-slate-950 transition-colors">
+    <div className="min-h-screen flex flex-col font-sans bg-transparent relative transition-colors">
       <Header />
       
       <main className="flex-1 container mx-auto py-10 px-4 md:px-6">

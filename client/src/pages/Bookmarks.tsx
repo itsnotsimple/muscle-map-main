@@ -3,8 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { Bookmark, Lock, Trash2, ArrowRight, X, Check } from "lucide-react";
+import Footer from "../components/Footer";
+import ScrollFloat from "../components/reactbits/ScrollFloat";
+import TiltedCard from "../components/reactbits/TiltedCard";
+import AnimatedContent from "../components/reactbits/AnimatedContent";
 
 // --- КОМПОНЕНТ ЗА ЕДИНИЧНА КАРТА ---
 const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
@@ -27,9 +30,19 @@ const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
     };
 
     return (
+      <TiltedCard
+        imageWidth="100%"
+        imageHeight="100%"
+        containerWidth="100%"
+        containerHeight="100%"
+        showMobileWarning={false}
+        showTooltip={false}
+        scaleOnHover={1.03}
+        rotateAmplitude={4}
+      >
         <div 
             onClick={() => onNavigate(ex.muscleGroup || "chest")}
-            className="bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 transition-all cursor-pointer group relative flex flex-col justify-between h-full"
+            className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 transition-colors cursor-pointer group relative flex flex-col justify-between h-full w-full"
         >
             <div>
                 <div className="flex justify-between">
@@ -47,13 +60,13 @@ const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
                        </span>
                     </div>
                   </div>
-                  <span className="bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded transition-colors">
+                  <span className="bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded transition-colors h-fit">
                     {String(t(`db.${ex.muscleGroup}`, ex.muscleGroup))}
                   </span>
                 </div>
             </div>
 
-            <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-50 dark:border-slate-800/50 min-h-[40px] transition-colors">
+            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50 dark:border-slate-800/50 min-h-[40px] transition-colors relative z-10">
                 {!isConfirming ? (
                     <>
                         <span className="text-xs text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -62,7 +75,7 @@ const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
                         
                         <button 
                             onClick={handleDeleteClick}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors cursor-pointer"
                             title={t('bookmarks.remove')}
                         >
                             <Trash2 size={18} />
@@ -91,6 +104,7 @@ const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
                 )}
             </div>
         </div>
+      </TiltedCard>
     );
 };
 
@@ -176,7 +190,7 @@ const Bookmarks = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors font-sans">
+    <div className="min-h-screen flex flex-col bg-transparent relative transition-colors font-sans">
       <Header />
       
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -193,11 +207,19 @@ const Bookmarks = () => {
             </div>
         ) : (
             <>
-                <div className="flex items-center gap-3 mb-8">
-                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg text-blue-600 dark:text-blue-400 transition-colors">
-                        <Bookmark size={24} />
+                <div className="flex flex-col items-center justify-center text-center gap-3 mb-8">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-2xl text-blue-600 dark:text-blue-400 transition-colors inline-flex">
+                        <Bookmark size={32} />
                     </div>
-                    <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 transition-colors">{t('bookmarks.myCollection')}</h1>
+                    <ScrollFloat 
+                        animationDuration={1} 
+                        ease='back.out(2)' 
+                        scrub={false}
+                        containerClassName="!m-0"
+                        textClassName="text-4xl font-black text-slate-800 dark:text-white transition-colors tracking-tight inline-block"
+                    >
+                        {t('bookmarks.myCollection')}
+                    </ScrollFloat>
                 </div>
 
                 {loading ? (
@@ -206,16 +228,18 @@ const Bookmarks = () => {
                    </div>
                 ) : (
                    Array.isArray(savedExercises) && savedExercises.length > 0 ? (
-                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {savedExercises.map((ex) => (
-                            <BookmarkCard 
-                                key={ex._id || Math.random()} 
-                                ex={ex} 
-                                onRemove={removeBookmark} 
-                                onNavigate={handleNavigate} 
-                            />
-                          ))}
-                       </div>
+                       <AnimatedContent distance={60} direction="vertical" duration={1.2} ease="back.out(1.5)">
+                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                              {savedExercises.map((ex) => (
+                                <BookmarkCard 
+                                    key={ex._id || Math.random()} 
+                                    ex={ex} 
+                                    onRemove={removeBookmark} 
+                                    onNavigate={handleNavigate} 
+                                />
+                              ))}
+                           </div>
+                       </AnimatedContent>
                    ) : (
                        <div className="bg-white dark:bg-slate-900 p-10 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-center transition-colors">
                           <p className="text-slate-500 dark:text-slate-400 mb-4 transition-colors">{t('bookmarks.noExercises')}</p>

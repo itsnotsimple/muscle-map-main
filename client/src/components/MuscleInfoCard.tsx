@@ -36,7 +36,7 @@ const MuscleInfoCard = ({ muscleKey, onClose }: MuscleInfoCardProps) => {
 
   if (loading) {
     return (
-        <div className="fixed right-0 top-0 h-screen w-full md:w-[400px] bg-white dark:bg-slate-900 p-6 shadow-2xl border-l border-slate-200 dark:border-slate-800 z-50 flex items-center justify-center transition-colors">
+        <div className="fixed right-0 top-0 h-screen w-full md:w-[400px] bg-white dark:bg-slate-900 p-6 shadow-2xl border-l border-slate-200 dark:border-slate-800 z-[1000] flex items-center justify-center transition-colors">
             <div className="text-purple-600 dark:text-purple-400 font-bold animate-pulse">{t('card.loading')}</div>
       </div>
     );
@@ -51,7 +51,7 @@ const MuscleInfoCard = ({ muscleKey, onClose }: MuscleInfoCardProps) => {
     : null;
 
   return (
-    <div className="fixed right-0 top-0 h-screen w-full md:w-[400px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 p-6 overflow-y-auto z-50 animate-slide-in transition-colors">
+    <div className="fixed right-0 top-0 h-screen w-full md:w-[400px] bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200 dark:border-slate-800 p-6 overflow-y-auto z-[1000] animate-slide-in transition-colors">
       
       {/* HEADER */}
       <div className="flex justify-between items-start mb-6">

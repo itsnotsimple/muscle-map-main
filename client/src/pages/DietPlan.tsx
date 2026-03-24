@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Save, Calculator, Activity, ChevronRight, Apple, Lock, CheckCircle2 } from 'lucide-react';
 import Header from '../components/Header';
+import CountUp from "../components/reactbits/CountUp";
+import ScrollFloat from "../components/reactbits/ScrollFloat";
+import AnimatedContent from "../components/reactbits/AnimatedContent"; // Added this import
 import Footer from '../components/Footer';
 
 interface Diet {
@@ -147,7 +150,7 @@ const DietPlan = () => {
 
     if (user === null) {
         return (
-            <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors font-sans">
+            <div className="min-h-screen flex flex-col bg-transparent relative transition-colors font-sans">
                 <Header />
                 <main className="flex-grow container mx-auto px-4 py-8">
                     <div className="max-w-xl mx-auto text-center mt-12 p-8 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors">
@@ -171,7 +174,7 @@ const DietPlan = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 font-sans transition-colors relative overflow-x-hidden">
+        <div className="min-h-screen flex flex-col bg-transparent relative font-sans transition-colors overflow-x-hidden">
             <Header />
 
             {/* Custom Toast Notification */}
@@ -185,17 +188,27 @@ const DietPlan = () => {
             <main className="flex-grow pt-12 pb-12">
                 <div className="max-w-6xl mx-auto px-4 md:px-8">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white transition-colors mb-4 tracking-tight">
-                        {t('diet.title', 'Custom Diet Plan')}
-                    </h1>
+                    <div className="flex flex-row items-center justify-center gap-3 mb-4">
+                        <Apple className="text-blue-600 dark:text-blue-400 w-10 h-10" strokeWidth={2} />
+                        <ScrollFloat 
+                            animationDuration={1} 
+                            ease='back.out(2)' 
+                            scrub={false}
+                            containerClassName="!m-0"
+                            textClassName="text-3xl md:text-5xl font-black text-slate-800 dark:text-white transition-colors tracking-tight inline-block"
+                        >
+                            {t('diet.title', 'Custom Diet Plan')}
+                        </ScrollFloat>
+                    </div>
                     <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto text-lg transition-colors">
                         {t('diet.subtitle', 'Calculate your daily caloric needs and get professional diet blueprints tailored to your goals.')}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* LEFT COLUMN: CALCULATOR FORM */}
-                    <div className="lg:col-span-4">
+                <AnimatedContent distance={60} direction="vertical" duration={1.2} ease="back.out(1.5)">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* LEFT COLUMN: CALCULATOR FORM */}
+                        <div className="lg:col-span-4">
                         <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 transition-colors">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="bg-purple-100 dark:bg-purple-900/30 p-2.5 rounded-xl transition-colors">
@@ -312,19 +325,19 @@ const DietPlan = () => {
                                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors relative overflow-hidden group">
                                         <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 dark:bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-colors"></div>
                                         <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{t('diet.maintenance', 'Maintenance')}</p>
-                                        <h3 className="text-3xl font-black text-blue-600 dark:text-blue-400 transition-colors">{tdee}</h3>
+                                        <h3 className="text-3xl font-black text-blue-600 dark:text-blue-400 transition-colors"><CountUp to={tdee} duration={1.5} /></h3>
                                         <p className="text-xs font-semibold text-slate-400 mt-1">{t('diet.kcal', 'kcal / day')}</p>
                                     </div>
                                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors relative overflow-hidden group">
                                          <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-500/10 rounded-bl-full -mr-4 -mt-4 transition-colors"></div>
                                         <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{t('diet.weightLoss', 'Weight Loss')}</p>
-                                        <h3 className="text-3xl font-black text-green-600 dark:text-green-400 transition-colors">{tdee - 500}</h3>
+                                        <h3 className="text-3xl font-black text-green-600 dark:text-green-400 transition-colors"><CountUp to={tdee - 500} duration={1.5} /></h3>
                                         <p className="text-xs font-semibold text-slate-400 mt-1">{t('diet.kcal', 'kcal / day')}</p>
                                     </div>
                                     <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-colors relative overflow-hidden group">
                                          <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 dark:bg-red-500/10 rounded-bl-full -mr-4 -mt-4 transition-colors"></div>
                                         <p className="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{t('diet.bulking', 'Bulking')}</p>
-                                        <h3 className="text-3xl font-black text-red-600 dark:text-red-400 transition-colors">{tdee + 300}</h3>
+                                        <h3 className="text-3xl font-black text-red-600 dark:text-red-400 transition-colors"><CountUp to={tdee + 300} duration={1.5} /></h3>
                                         <p className="text-xs font-semibold text-slate-400 mt-1">{t('diet.kcal', 'kcal / day')}</p>
                                     </div>
                                 </div>
@@ -363,15 +376,15 @@ const DietPlan = () => {
                                                     <div className="grid grid-cols-3 gap-4 mb-5">
                                                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl text-center transition-colors">
                                                             <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1 flex items-center justify-center gap-1">Protein</p>
-                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors">{proteinGrams}g</p>
+                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors"><CountUp to={proteinGrams} duration={1.5} />g</p>
                                                         </div>
                                                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl text-center transition-colors">
                                                             <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1 flex items-center justify-center gap-1">Carbs</p>
-                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors">{carbsGrams}g</p>
+                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors"><CountUp to={carbsGrams} duration={1.5} />g</p>
                                                         </div>
                                                         <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl text-center transition-colors">
                                                             <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1 flex items-center justify-center gap-1">Fats</p>
-                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors">{fatsGrams}g</p>
+                                                            <p className="text-xl font-black text-slate-800 dark:text-slate-200 transition-colors"><CountUp to={fatsGrams} duration={1.5} />g</p>
                                                         </div>
                                                     </div>
 
@@ -400,6 +413,7 @@ const DietPlan = () => {
                         )}
                     </div>
                 </div>
+                </AnimatedContent>
                 </div>
             </main>
             <Footer />

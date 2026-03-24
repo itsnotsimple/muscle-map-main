@@ -56,7 +56,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 font-sans transition-colors relative">
+    <div className="flex flex-col min-h-screen bg-transparent relative font-sans transition-colors">
       <Link to="/" className="absolute top-8 left-8 p-3 bg-white dark:bg-slate-900 rounded-full shadow-md text-slate-800 dark:text-white hover:scale-110 transition-transform">
         <ArrowLeft size={24} />
       </Link>

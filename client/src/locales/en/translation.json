@@ -250,6 +250,34 @@
     "Buttocks": "Buttocks",
     "Lower leg": "Lower leg"
   },
+  "exercises": {
+    "subtitle": "Select a muscle group below to explore dedicated workouts and professional tracking metrics tailored specifically for your target areas."
+  },
+  "nav": {
+    "exercises": "All Exercises",
+    "tools": "Tools & Trackers",
+    "platform": "Platform",
+    "account": "Account",
+    "auth": "Authentication"
+  },
+  "muscle": {
+    "viewExercises": "Explore"
+  },
+  "muscles": {
+    "chest": "Chest",
+    "back": "Lower Back",
+    "lats": "Lats",
+    "shoulders": "Shoulders",
+    "biceps": "Biceps",
+    "triceps": "Triceps",
+    "forearms": "Forearms",
+    "abs": "Abs",
+    "glutes": "Glutes",
+    "quads": "Quads",
+    "hamstrings": "Hamstrings",
+    "calves": "Calves",
+    "neck": "Neck"
+  },
   "badges": {
     "title": "Achievements",
     "subtitle": "Unlock badges by exploring the platform.",

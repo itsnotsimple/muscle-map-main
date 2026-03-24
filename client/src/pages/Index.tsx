@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import InteractiveMuscleMap from "../components/InteractiveMuscleMap";
+import ScrollFloat from "../components/reactbits/ScrollFloat";
+import AnimatedContent from "../components/reactbits/AnimatedContent";
 import MuscleInfoCard from "../components/MuscleInfoCard"; // Импортираме новия панел
 
 const Index = () => {
@@ -24,17 +26,23 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-transparent transition-colors overflow-x-hidden relative">
       <Header />
 
       <main className="flex-grow relative">
         {/* HERO SECTION */}
-        <section className="bg-white dark:bg-slate-900 py-8 shadow-sm transition-colors border-b border-transparent dark:border-slate-800">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-2 transition-colors">
-              {t('index.title1')} <span className="text-blue-600 dark:text-blue-400">{t('index.title2')}</span>
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-6 transition-colors">
+        <section className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-lg py-8 shadow-sm transition-colors border-b border-slate-200/50 dark:border-slate-800/40">
+          <div className="container mx-auto px-4 text-center flex flex-col items-center">
+            <ScrollFloat 
+              animationDuration={1} 
+              ease='back.out(2)' 
+              scrub={false}
+              containerClassName="!m-0"
+              textClassName="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 transition-colors inline-block"
+            >
+                {t('index.title1') + " " + t('index.title2')}
+            </ScrollFloat>
+            <p className="mt-4 text-lg md:text-xl text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto transition-colors">
               {t('index.subtitle')}
             </p>
             
@@ -54,11 +62,14 @@ const Index = () => {
         {/* MAP SECTION */}
         <section className="py-8 container mx-auto px-4 flex justify-center overflow-hidden">
           {/* Картата се измества леко вляво, ако панелът е отворен (на големи екрани) */}
-          <div className={`w-full max-w-[900px] transition-all duration-500 ${selectedMuscle ? 'md:mr-[350px]' : 'mx-auto'}`}>
-             <div className="bg-white dark:bg-slate-900 p-2 md:p-4 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 w-full transition-colors overflow-hidden">
+          <AnimatedContent 
+            distance={50} direction="vertical" duration={1.2} ease="power3.out"
+            className={`w-full max-w-[900px] transition-all duration-500 ${selectedMuscle ? 'md:mr-[350px]' : 'mx-auto'}`}
+          >
+             <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-2 md:p-4 rounded-2xl shadow-lg border border-slate-100/50 dark:border-slate-800/50 w-full transition-colors overflow-hidden">
                 <InteractiveMuscleMap onMuscleSelect={handleMuscleSelect} />
              </div>
-          </div>
+          </AnimatedContent>
         </section>
 
         {/* СТРАНИЧЕН ПАНЕЛ (SIDE TAB) */}
