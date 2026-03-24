@@ -119,7 +119,7 @@ const DietPlan = () => {
     const saveProfile = async (showAlert = true) => {
         setIsSaving(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = user?.token;
             const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/profile', {
                 method: 'PUT',
                 headers: {

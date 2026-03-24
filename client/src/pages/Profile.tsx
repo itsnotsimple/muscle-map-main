@@ -23,7 +23,7 @@ const Profile = () => {
             headers: {
                 'Content-Type': 'application/json',
                 // fallback if token state isn't directly exposed
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${user?.token}`
             },
             body: JSON.stringify({ password: deletePassword })
         });
