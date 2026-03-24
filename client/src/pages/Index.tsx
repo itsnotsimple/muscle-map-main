@@ -52,10 +52,10 @@ const Index = () => {
         </section>
 
         {/* MAP SECTION */}
-        <section className="py-8 container mx-auto px-4 flex justify-center">
+        <section className="py-8 container mx-auto px-4 flex justify-center overflow-hidden">
           {/* Картата се измества леко вляво, ако панелът е отворен (на големи екрани) */}
-          <div className={`transition-all duration-500 ${selectedMuscle ? 'md:mr-[350px]' : ''}`}>
-             <div className="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 inline-block transition-colors">
+          <div className={`w-full max-w-[900px] transition-all duration-500 ${selectedMuscle ? 'md:mr-[350px]' : 'mx-auto'}`}>
+             <div className="bg-white dark:bg-slate-900 p-2 md:p-4 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 w-full transition-colors overflow-hidden">
                 <InteractiveMuscleMap onMuscleSelect={handleMuscleSelect} />
              </div>
           </div>

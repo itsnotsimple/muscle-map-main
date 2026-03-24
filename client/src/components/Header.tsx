@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Home, Bookmark, List, Info, User, LogOut } from "lucide-react"; // Иконите
+import { Home, Bookmark, List, Info, User, LogOut, Menu, X } from "lucide-react"; // Иконите
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
@@ -9,6 +10,12 @@ const Header = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close mobile menu whenever the route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   // Помощна функция за стилизиране на активния линк
   const getLinkClass = (path: string) => {
@@ -24,9 +31,8 @@ const Header = () => {
         
         {/* ЛОГО И ИМЕ (В ЛЯВО) */}
         <Link to="/" className="flex items-center gap-3 group">
-          {/* ТУК Е ТВОЕТО ЛОГО */}
           <img 
-            src="/public/images/logo.png" 
+            src="/images/logo.png" 
             alt="Muscle Map Logo" 
             className="h-10 w-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
           />
@@ -35,7 +41,19 @@ const Header = () => {
           </span>
         </Link>
 
-        {/* НАВИГАЦИЯ (В ДЯСНО) */}
+        {/* MOBILE TOGGLES & HAMBURGER */}
+        <div className="flex items-center gap-3 md:hidden">
+          <LanguageToggle />
+          <ThemeToggle />
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 -mr-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* DESKTOP НАВИГАЦИЯ (В ДЯСНО) */}
         <nav className="hidden md:flex items-center gap-2">
           
           <Link to="/" className={getLinkClass("/")}>
@@ -102,6 +120,65 @@ const Header = () => {
           </div>
         </nav>
       </div>
+
+      {/* MOBILE MENU DROPDOWN */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 absolute w-full shadow-lg">
+          <nav className="flex flex-col gap-3">
+            <Link to="/" className={getLinkClass("/")}>
+              <Home size={18} />
+              <span>{t('header.home')}</span>
+            </Link>
+
+            <Link to="/bmi" className={getLinkClass("/bmi")}>
+               <Info size={18} />
+               <span>{t('header.bmi')}</span>
+            </Link>
+
+            <Link to="/diet" className={getLinkClass("/diet")}>
+               <List size={18} />
+               <span>{t('diet.title', 'Diet Plan')}</span>
+            </Link>
+
+            <Link to="/bookmarks" className={getLinkClass("/bookmarks")}>
+              <Bookmark size={18} />
+              <span>{t('header.bookmark')}</span>
+            </Link>
+
+            <div className="h-px w-full bg-slate-200 dark:bg-slate-800 my-2"></div>
+
+            {user ? (
+              <div className="flex flex-col gap-3">
+                <Link to="/profile" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all">
+                  <div className="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded-full text-blue-600 dark:text-blue-400">
+                      <User size={16} />
+                  </div>
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300 truncate">
+                    {user.email}
+                  </span>
+                </Link>
+                
+                <button 
+                  onClick={logout}
+                  className="flex items-center gap-2 px-3 py-2 text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors w-full text-left"
+                >
+                  <LogOut size={18} />
+                  <span>{t('header.logout', 'Sign Out')}</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <Link to="/login" className="flex items-center justify-center border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-lg font-bold hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors w-full">
+                  {t('header.login')}
+                </Link>
+                <Link to="/register" className="flex items-center justify-center bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 dark:bg-blue-700 shadow-md transition-all w-full">
+                  {t('header.signup')}
+                </Link>
+              </div>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

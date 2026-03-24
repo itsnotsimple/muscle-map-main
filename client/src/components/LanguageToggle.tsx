@@ -12,7 +12,7 @@ export function LanguageToggle() {
     if (user && user.token) {
       updateUser({ language: nextLang })
       try {
-        await fetch("http://localhost:5000/api/auth/user/preferences", {
+        await fetch("http://localhost:5000/api/user/preferences", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

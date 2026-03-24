@@ -99,8 +99,8 @@ const InteractiveMuscleMap = ({ onMuscleSelect }: InteractiveMuscleMapProps) => 
   }, [isLoaded, onMuscleSelect]);
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="relative w-full max-w-[860px]" style={{ minHeight: '600px' }}>
+    <div className="w-full flex justify-center overflow-hidden">
+      <div className="relative w-full max-w-[860px] min-h-[350px] md:min-h-[600px]">
         
         {/* Loader */}
         {!isLoaded && (

@@ -223,11 +223,16 @@ router.put('/user/profile', authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const user = await User.findById(userId);
 
-    if (age) user.physicalProfile.age = age;
-    if (gender) user.physicalProfile.gender = gender;
-    if (height) user.physicalProfile.height = height;
-    if (weight) user.physicalProfile.weight = weight;
-    if (activityLevel) user.physicalProfile.activityLevel = activityLevel;
+    // Гарантираме, че обектът съществува, преди да му присвояваме свойства
+    if (!user.physicalProfile) {
+        user.physicalProfile = {};
+    }
+
+    if (age !== undefined) user.physicalProfile.age = age;
+    if (gender !== undefined) user.physicalProfile.gender = gender;
+    if (height !== undefined) user.physicalProfile.height = height;
+    if (weight !== undefined) user.physicalProfile.weight = weight;
+    if (activityLevel !== undefined) user.physicalProfile.activityLevel = activityLevel;
 
     await user.save();
     res.json({ message: "Profile updated successfully", physicalProfile: user.physicalProfile });

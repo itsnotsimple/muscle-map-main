@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Save, Calculator, Activity, ChevronRight, Apple, Lock } from 'lucide-react';
+import { Save, Calculator, Activity, ChevronRight, Apple, Lock, CheckCircle2 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -36,6 +36,7 @@ const DietPlan = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isCalculating, setIsCalculating] = useState(false);
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
 
     // If not logged in, redirect
     useEffect(() => {
@@ -127,10 +128,14 @@ const DietPlan = () => {
                 },
                 body: JSON.stringify(form)
             });
-            if (res.ok && showAlert) {
+            if (res.ok) {
                 // Update global context so the profile stays in sync without reloading
                 if (updateUser) {
                     updateUser({ physicalProfile: form });
+                }
+                if (showAlert) {
+                    setShowSuccessToast(true);
+                    setTimeout(() => setShowSuccessToast(false), 3000);
                 }
             }
         } catch (err) {
@@ -166,8 +171,17 @@ const DietPlan = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 font-sans transition-colors">
+        <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 font-sans transition-colors relative overflow-x-hidden">
             <Header />
+
+            {/* Custom Toast Notification */}
+            <div className={`fixed top-20 right-4 z-50 transition-all duration-300 transform ${showSuccessToast ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
+                <div className="bg-green-50 dark:bg-green-900 border-l-4 border-green-500 p-4 rounded-lg shadow-lg flex items-center gap-3 w-80">
+                    <CheckCircle2 className="text-green-500" size={24} />
+                    <p className="text-green-800 dark:text-green-100 font-bold">{t('diet.saved', 'Profile saved successfully!')}</p>
+                </div>
+            </div>
+
             <main className="flex-grow pt-12 pb-12">
                 <div className="max-w-6xl mx-auto px-4 md:px-8">
                 <div className="text-center mb-10">
