@@ -21,10 +21,10 @@ const PORT = process.env.PORT || 5000;
 
 // Настройки
 app.use(cors({
-  origin: ["http://localhost:8080", "http://127.0.0.1:8080"],
+  origin: ["http://localhost:8080", "http://127.0.0.1:8080", "https://muscle-map-main.vercel.app"],
   credentials: true
 }));
-app.use(cors());
+app.use(express.json());
 
 // --- ВРЪЗВАМЕ РУТОВЕТЕ ---
 // Всичко отива под /api prefix
