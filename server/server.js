@@ -15,6 +15,7 @@ try {
 const authRoutes = require('./routes/auth');      // Тук е User логиката + триенето
 const muscleRoutes = require('./routes/muscles'); // Тук е логиката за тренировките
 const dietRoutes = require('./routes/diets');     // Логика за диетите
+const chatRoutes = require('./routes/chat');      // Groq Chatbot логика
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use('/api', authRoutes);    // http://localhost:5000/api/register ...
 app.use('/api', muscleRoutes);  // http://localhost:5000/api/muscles/chest ...
 app.use('/api', dietRoutes);    // http://localhost:5000/api/diets
+app.use('/api', chatRoutes);    // http://localhost:5000/api/chat
 
 // Връзка с базата
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/musclewiki', {

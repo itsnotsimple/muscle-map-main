@@ -18,7 +18,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { GamificationEngine } from './components/GamificationEngine';
 import SoftAurora from './components/reactbits/SoftAurora';
-import GradualBlur from './components/reactbits/GradualBlur';
+import Chatbot from './components/Chatbot';
 
 const queryClient = new QueryClient();
 
@@ -52,6 +52,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
         <GamificationEngine />
+        <Chatbot />
         <SoftAurora
           speed={0.5}
           scale={1.5}

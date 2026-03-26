@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowLeft } from "lucide-react";
 
 const Terms = () => {
   const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-[#E5ECEF] dark:bg-slate-950 py-12 px-4 transition-colors">
+        <Link to="/" className="absolute top-8 left-8 p-3 bg-white dark:bg-slate-900 rounded-full shadow-md text-slate-800 dark:text-white hover:scale-110 transition-transform z-50">
+        <ArrowLeft size={24} />
+      </Link>
       <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 md:p-12 text-slate-800 dark:text-slate-200">
         <div className="flex flex-col items-center mb-10 border-b border-slate-200 dark:border-slate-800 pb-8">
             <Link to="/" className="inline-block transition-transform hover:scale-105 active:scale-95 mb-4">

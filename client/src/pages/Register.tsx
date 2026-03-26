@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useGoogleLogin } from "@react-oauth/google";
 import AnimatedContent from "../components/reactbits/AnimatedContent";
+import { ApiService } from "../services/api";
+import { ArrowLeft } from "lucide-react";
 
 const GoogleIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-5 h-5">
@@ -38,11 +40,7 @@ const Register = () => {
         try {
             setError("");
             setIsSubmitting(true);
-            const response = await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/google", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ access_token: tokenResponse.access_token }),
-            });
+            const response = await ApiService.googleLogin(tokenResponse.access_token);
             
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || `Server Error`);
@@ -69,11 +67,7 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await ApiService.register({ email, password });
 
       const data = await response.json();
 
@@ -92,6 +86,9 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-transparent relative flex shadow-inner flex-col items-center justify-center py-10 px-4 font-sans transition-colors">
+      <Link to="/" className="absolute top-8 left-8 p-3 bg-white dark:bg-slate-900 rounded-full shadow-md text-slate-800 dark:text-white hover:scale-110 transition-transform z-50">
+        <ArrowLeft size={24} />
+      </Link>
       <AnimatedContent
         distance={40}
         direction="vertical"

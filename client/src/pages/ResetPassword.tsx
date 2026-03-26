@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, KeyRound, Loader2 } from "lucide-react";
+import { ApiService } from "../services/api";
 
 const ResetPassword = () => {
   const { token } = useParams<{ token: string }>();
@@ -31,11 +32,7 @@ const ResetPassword = () => {
     setMessage("");
 
     try {
-      const res = await fetch(`https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/reset-password/${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
+      const res = await ApiService.resetPassword(token as string, password);
       
       const data = await res.json();
       

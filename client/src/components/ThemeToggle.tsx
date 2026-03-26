@@ -1,6 +1,7 @@
 import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useAuth } from "../context/AuthContext"
+import { useTheme } from "next-themes";
+import { useAuth } from "../context/AuthContext";
+import { ApiService } from "../services/api";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -13,14 +14,7 @@ export function ThemeToggle() {
     if (user && user.token) {
       updateUser({ theme: newTheme })
       try {
-        await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/preferences", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${user.token}`
-          },
-          body: JSON.stringify({ theme: newTheme })
-        })
+        await ApiService.updatePreferences(user.token, { theme: newTheme });
       } catch (error) {
         console.error("Failed to sync theme preference", error)
       }

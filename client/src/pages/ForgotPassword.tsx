@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
+import { ApiService } from '../services/api';
 import { Link } from "react-router-dom";
 import { ArrowLeft, Mail, Loader2 } from "lucide-react";
 
@@ -15,11 +17,8 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
+      const res = await ApiService.forgotPassword(email);
+      
       
       const data = await res.json();
       

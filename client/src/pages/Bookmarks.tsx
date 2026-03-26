@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import ScrollFloat from "../components/reactbits/ScrollFloat";
 import TiltedCard from "../components/reactbits/TiltedCard";
 import AnimatedContent from "../components/reactbits/AnimatedContent";
+import { ApiService } from "../services/api";
 
 // --- КОМПОНЕНТ ЗА ЕДИНИЧНА КАРТА ---
 const BookmarkCard = ({ ex, onRemove, onNavigate }: any) => {
@@ -126,13 +127,7 @@ const Bookmarks = () => {
         }
 
         try {
-            const response = await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/bookmarks", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+            const response = await ApiService.getBookmarks(user.token);
 
             if (response.ok) {
                 const data = await response.json();
@@ -158,12 +153,7 @@ const Bookmarks = () => {
   // 2. ТРИЕНЕ
   const removeBookmark = async (id: string) => {
      try {
-        const response = await fetch(`https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/bookmarks/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${user?.token}`,
-            }
-        });
+        const response = await ApiService.deleteBookmark(user.token, id);
 
         const data = await response.json();
 

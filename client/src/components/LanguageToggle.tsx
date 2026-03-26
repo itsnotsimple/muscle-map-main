@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { ApiService } from '../services/api';
 
 export function LanguageToggle() {
   const { i18n } = useTranslation();
@@ -12,14 +13,7 @@ export function LanguageToggle() {
     if (user && user.token) {
       updateUser({ language: nextLang })
       try {
-        await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/preferences", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${user.token}`
-          },
-          body: JSON.stringify({ language: nextLang })
-        })
+        await ApiService.updatePreferences(user.token, { language: nextLang });
       } catch (error) {
         console.error("Failed to sync language preference", error)
       }

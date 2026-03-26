@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { ApiService } from "../services/api";
 
 const VerifyEmail = () => {
   const { token } = useParams<{token: string}>();
@@ -18,7 +19,7 @@ const VerifyEmail = () => {
       hasVerified.current = true;
       
       try {
-        const res = await fetch(`https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/verify/${token}`);
+        const res = await ApiService.verifyEmail(token);
         const data = await res.json();
         if (res.ok) {
           setStatus('success');

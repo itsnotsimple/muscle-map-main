@@ -8,6 +8,7 @@ import SpotlightCard from "../components/reactbits/SpotlightCard";
 import { useEffect, useState } from "react";
 import ScrollFloat from "../components/reactbits/ScrollFloat";
 import AnimatedContent from "../components/reactbits/AnimatedContent";
+import { ApiService } from "../services/api";
 
 const Profile = () => {
   const { user, logout, updateUser } = useAuth();
@@ -23,9 +24,7 @@ const Profile = () => {
     const checkVerificationStatus = async () => {
         if (!user || user.isVerified) return;
         try {
-            const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/status', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const res = await ApiService.getUserStatus(user.token);
             if (res.ok) {
                 const data = await res.json();
                 if (data.isVerified) updateUser({ isVerified: true });
@@ -41,15 +40,7 @@ const Profile = () => {
     setIsDeleting(true);
     setDeleteError("");
     try {
-        const res = await fetch(`https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/profile`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                // fallback if token state isn't directly exposed
-                'Authorization': `Bearer ${user?.token}`
-            },
-            body: JSON.stringify({ password: deletePassword })
-        });
+        const res = await ApiService.deleteAccount(user?.token, deletePassword);
         const data = await res.json();
         
         if (!res.ok) {

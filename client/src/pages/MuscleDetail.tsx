@@ -4,7 +4,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { ArrowLeft, Dumbbell, MapPin, Clock, Info, Bookmark, Check } from "lucide-react";
+import { ApiService } from '../services/api';
+import { ArrowLeft, Dumbbell, MapPin, Clock, Info, Bookmark, Check, Youtube } from "lucide-react";
 
 const MuscleDetail = () => {
   const { t } = useTranslation();
@@ -22,18 +23,17 @@ const MuscleDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const muscleRes = await fetch(`https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/muscles/${muscleId}`);
+        const muscleRes = await ApiService.getMuscleDetails(muscleId || '');
         if (!muscleRes.ok) throw new Error("Muscle not found");
         const muscleJson = await muscleRes.json();
         setMuscleData(muscleJson);
 
         if (user) {
-          const bookmarksRes = await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/bookmarks", {
-            headers: { "Authorization": `Bearer ${user.token}` }
-          });
+          const bookmarksRes = await ApiService.getBookmarks(user.token);
           if (bookmarksRes.ok) {
-            const bookmarksJson = await bookmarksRes.json();
-            setSavedExercises(bookmarksJson);
+            const bookmarksData = await bookmarksRes.json();
+            // Store the full objects so we have access to their _id for deletion
+            setSavedExercises(bookmarksData);
           }
         }
       } catch (error) {
@@ -52,31 +52,22 @@ const MuscleDetail = () => {
       return;
     }
 
-    const isAlreadySaved = savedExercises.some((e) => e.name === exercise.name);
-    let newSavedList;
-    
-    if (isAlreadySaved) {
-        newSavedList = savedExercises.filter((e) => e.name !== exercise.name);
-    } else {
-        newSavedList = [...savedExercises, { ...exercise, muscleGroup: muscleData.title }];
-    }
-    setSavedExercises(newSavedList);
+    const existingBookmark = savedExercises.find((e) => e.name === exercise.name);
 
     try {
-      const response = await fetch("https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/bookmark", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${user.token}`
-        },
-        body: JSON.stringify({ 
-            exercise: { ...exercise, muscleGroup: muscleData.title } 
-        })
-      });
+      let response;
+      if (existingBookmark && existingBookmark._id) {
+        // Already bookmarked - we need to remove it
+        response = await ApiService.deleteBookmark(user.token, existingBookmark._id);
+      } else {
+        // Not bookmarked - add it
+        response = await ApiService.addBookmark(user.token, { ...exercise, muscleGroup: muscleData.title });
+      }
 
       if (!response.ok) {
-        throw new Error("Failed to save");
+        throw new Error("Failed to toggle bookmark");
       }
+      
       const updatedList = await response.json();
       setSavedExercises(updatedList);
       if (updateUser) updateUser({ savedExercises: updatedList });
@@ -121,9 +112,9 @@ const MuscleDetail = () => {
       
       <main className="flex-1 container mx-auto py-10 px-4 md:px-6">
         
-        <Link to="/" className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors font-medium">
-          <ArrowLeft size={20} /> {t('detail.backToMap')}
-        </Link>
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors font-medium">
+          <ArrowLeft size={20} /> {t('detail.back', 'Back')}
+        </button>
 
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-sm border border-slate-200 dark:border-slate-800 mb-10 transition-colors">
           <div className="flex items-center gap-4 mb-4">
@@ -234,6 +225,22 @@ const MuscleDetail = () => {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+                    )}
+
+                    {ex.youtubeUrl && (
+                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 transition-colors">
+                            <a 
+                                href={ex.youtubeUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center gap-2.5 w-full py-3 bg-[#FF0000] text-white hover:bg-[#CC0000] rounded-xl font-bold transition-all shadow-[0_4px_14px_rgba(255,0,0,0.4)] hover:shadow-[0_6px_20px_rgba(255,0,0,0.6)]"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" className="opacity-90">
+                                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                                <span className="tracking-wide">{t('detail.watchTutorial', 'Watch on YouTube')}</span>
+                            </a>
                         </div>
                     )}
                 </div>

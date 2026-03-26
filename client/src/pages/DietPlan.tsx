@@ -6,7 +6,8 @@ import { Save, Calculator, Activity, ChevronRight, Apple, Lock, CheckCircle2 } f
 import Header from '../components/Header';
 import CountUp from "../components/reactbits/CountUp";
 import ScrollFloat from "../components/reactbits/ScrollFloat";
-import AnimatedContent from "../components/reactbits/AnimatedContent"; // Added this import
+import AnimatedContent from "../components/reactbits/AnimatedContent";
+import { ApiService } from "../services/api"; // Added this import
 import Footer from '../components/Footer';
 
 interface Diet {
@@ -76,7 +77,7 @@ const DietPlan = () => {
         const fetchDiets = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/diets');
+                const res = await ApiService.getDiets();
                 if (res.ok) {
                     const data = await res.json();
                     setDiets(data);
@@ -123,14 +124,7 @@ const DietPlan = () => {
         setIsSaving(true);
         try {
             const token = user?.token;
-            const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(form)
-            });
+            const res = await ApiService.updateProfile(token, form);
             if (res.ok) {
                 // Update global context so the profile stays in sync without reloading
                 if (updateUser) {

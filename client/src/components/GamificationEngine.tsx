@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 import { GAMIFICATION_BADGES } from '../utils/badges';
 import { useAuth } from '../context/AuthContext';
+import { ApiService } from '../services/api';
 
 export const GamificationEngine = () => {
     const { user, updateUser } = useAuth();
@@ -24,14 +25,7 @@ export const GamificationEngine = () => {
         if (newlyUnlockedBadges.length > 0 && token) {
             newlyUnlockedBadges.forEach(async (badge) => {
                 try {
-                    const res = await fetch('https://electronic-nadiya-musclemap-a30e9055.koyeb.app/api/user/badges', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ badgeId: badge.id })
-                    });
+                    const res = await ApiService.addBadge(token, badge.id);
                     if (res.ok) {
                         const data = await res.json();
                         updateUser({ unlockedBadges: data.unlockedBadges });

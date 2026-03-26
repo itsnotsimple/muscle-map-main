@@ -128,6 +128,7 @@
     "notFound": "Muscle Not Found",
     "goBack": "Go Back Home",
     "backToMap": "Back to Map",
+    "back": "Back",
     "completeGuide": "Complete Training Guide",
     "targetAnatomy": "Target Anatomy",
     "primaryMuscle": "Primary Muscle",
@@ -136,7 +137,8 @@
     "saveExercise": "Save exercise",
     "noGif": "No GIF available",
     "general": "General",
-    "execution": "Execution:"
+    "execution": "Execution:",
+    "watchTutorial": "Watch on YouTube"
   },
   "db": {
     "Beginner": "Beginner",
@@ -291,5 +293,15 @@
     "librarian": { "title": "Librarian", "desc": "Saved 10+ exercises." },
     "nightowl": { "title": "Night Owl", "desc": "Switched to Dark Mode." },
     "bilingual": { "title": "Bilingual", "desc": "Explored the app in Bulgarian." }
+  },
+  "chatbot": {
+    "title": "MuscleMap AI",
+    "subtitle": "Expert Coach",
+    "greeting": "Hi! I am **MuscleMap AI**. How can I help you with your fitness journey today?",
+    "placeholder": "Ask about fitness or diet...",
+    "loginPrompt": "Login to ask questions",
+    "signInBtn": "Sign In to Chat",
+    "consulting": "Consulting..."
   }
 }
+

@@ -12,7 +12,8 @@ const MuscleSchema = new mongoose.Schema({
       equipment: { type: String },  // Dumbbells / Barbell / Machine
       location: { type: String },   // Gym / Home
       steps: [{ type: String }],    // Масив от стъпки (Инструкции)
-      gif: { type: String }
+      gif: { type: String },
+      youtubeUrl: { type: String } // НОВО: Линкове към туториали
     }
   ]
 });
