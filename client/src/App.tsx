@@ -19,6 +19,8 @@ import ResetPassword from './pages/ResetPassword';
 import { GamificationEngine } from './components/GamificationEngine';
 import SoftAurora from './components/reactbits/SoftAurora';
 import Chatbot from './components/Chatbot';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const queryClient = new QueryClient();
 
@@ -63,6 +65,8 @@ const App = () => {
           noiseOctaves={4}
         />
       </BrowserRouter>
+      <Analytics />
+      <SpeedInsights />
     </QueryClientProvider>
   );
 };
