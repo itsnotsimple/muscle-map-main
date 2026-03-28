@@ -7,7 +7,7 @@
 ![Node](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?logo=node.js)
 ![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb)
 ![AI](https://img.shields.io/badge/AI-Llama%203.1%20via%20Groq-orange)
-![Vercel](https://img.shields.io/badge/Deployed-Vercel%20%2B%20Koyeb-black?logo=vercel)
+![Infrastructure](https://img.shields.io/badge/Infrastructure-Vercel%20%26%20Koyeb-red?logo=koyeb&logoColor=white)
 
 **MuscleMap AI** is a full-stack fitness intelligence platform that combines an interactive anatomical muscle map with an AI-powered personal coach. Users can explore muscle groups, discover targeted exercises, generate custom diet plans, track their BMI, and get real-time coaching from an AI trained to think like an elite gym coach.
 
